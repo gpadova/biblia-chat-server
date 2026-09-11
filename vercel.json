@@ -1,9 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["gru1"],
-  "functions": {
-    "api/chat.ts": {
-      "maxDuration": 300
-    }
-  }
+  "buildCommand": "pnpm run build",
+  "framework": null,
+  "regions": ["gru1"]
 }

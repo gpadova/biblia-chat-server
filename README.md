@@ -8,7 +8,8 @@ The conversation endpoint of **Bíblia Loyola**, a Bible reader for iOS and Andr
 
 | Path | What it is |
 |---|---|
-| `api/chat.ts` | The Vercel function. A one-line re-export. |
+| `src/vercel-entry.ts` | The function's entry: adapts Node's `(req, res)` to the Web-standard handler below and streams the body through. |
+| `scripts/build.mjs` | Bundles the entry with esbuild into `.vercel/output/` (Build Output API) — one CommonJS file with the corpus inlined. Vercel runs it as the build command. |
 | `src/chat-route.ts` | The handler: rate limit → validate → `streamText` with the `buscar_versiculos` tool. Reads `OPENROUTER_API_KEY`. |
 | `src/bible-tools.ts` | Reference parsing and the tool's execution against the corpus. Also imported by the app. |
 | `src/rate-limit.ts` | Per-IP limits counted in Upstash Redis over REST. Fails open. |
@@ -18,14 +19,14 @@ The conversation endpoint of **Bíblia Loyola**, a Bible reader for iOS and Andr
 
 ## Deploying
 
-The project is connected to Vercel and deploys on push. Configuration that matters:
+The project is connected to Vercel and deploys on push. The build is ours, not Vercel's: `pnpm run build` writes a ready-made function into `.vercel/output/` and Vercel deploys that as-is. The reason is module format — `ai` and the OpenRouter provider ship ESM only, and Vercel's TypeScript builder compiles file by file and leaves them as `require()` calls the runtime cannot satisfy. Bundling with esbuild into one CommonJS file makes the question go away. Configuration that matters:
 
-- `vercel.json` pins the function to **`gru1` (São Paulo)** and sets `maxDuration: 300` — the answer streams, so the function stays alive for the whole reply.
+- `scripts/build.mjs` writes the function's `.vc-config.json`: region **`gru1` (São Paulo)**, `maxDuration: 300` (the answer streams, so the function stays alive for the whole reply), `supportsResponseStreaming: true`.
 - Environment variables, set in the Vercel project (never committed):
   - `OPENROUTER_API_KEY` — from https://openrouter.ai/keys. Without it the route answers 503.
   - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — from https://console.upstash.com. Without them the limiter is **inert** and the response header `X-RateLimit-Store` says `none`; with them it says `redis`. Check that header before trusting a deployment, because the endpoint is unauthenticated and the model is paid.
 
-Locally, `pnpm install && pnpm dev` runs it under `vercel dev`; the app repo instead mounts `src/chat-route.ts` on its own Metro dev server, so day-to-day development does not need this.
+Locally, `pnpm install && pnpm build` produces the same artifact Vercel runs, and `pnpm dev` serves it under `vercel dev`; the app repo instead mounts `src/chat-route.ts` on its own Metro dev server, so day-to-day development does not need this.
 
 ## Publishing from the app repo
 

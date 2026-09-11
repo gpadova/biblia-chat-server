@@ -4,6 +4,7 @@
   "private": true,
   "description": "The conversation endpoint of Bíblia Loyola — a Vercel function that answers questions about a passage of the Figueiredo Bible, grounded in the bundled corpus.",
   "scripts": {
+    "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "dev": "vercel dev",
     "deploy": "vercel deploy --prod"
@@ -15,9 +16,15 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "esbuild": "^0.25.0"
   },
   "engines": {
     "node": "22.x"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

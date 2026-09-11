@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "Node20",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
     "types": ["node"],
     "strict": true,
     "resolveJsonModule": true,
@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["api/**/*.ts", "src/**/*.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.mjs"]
 }
