@@ -1,0 +1,23 @@
+{
+  "name": "biblia-chat-server",
+  "version": "2.0.0",
+  "private": true,
+  "description": "The conversation endpoint of Bíblia Loyola — a Vercel function that answers questions about a passage of the Figueiredo Bible, grounded in the bundled corpus.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "@openrouter/ai-sdk-provider": "^3.0.0",
+    "ai": "^7.0.58",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "~5.9.3"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
